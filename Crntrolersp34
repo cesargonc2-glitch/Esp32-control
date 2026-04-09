@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub ESP32 Controller</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #0d1117; color: #c9d1d9; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; width: 90%; max-width: 500px; text-align: center; }
+        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white; text-align: center; }
+        .btn-group { display: flex; justify-content: space-around; margin-top: 20px; }
+        button { padding: 15px 25px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        .on { background: #238636; color: white; }
+        .off { background: #da3633; color: white; }
+        #status { margin-top: 15px; font-size: 0.9em; color: #8b949e; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Control ESP32 ⚡</h2>
+        <p>Introduce la IP de tu placa:</p>
+        <input type="text" id="ipAddress" placeholder="Ej: 192.168.1.100" value="192.168.1.100">
+        
+        <div class="btn-group">
+            <button class="on" onclick="enviar('on')">ENCENDER</button>
+            <button class="off" onclick="enviar('off')">APAGAR</button>
+        </div>
+        
+        <div id="status">Esperando comandos...</div>
+    </div>
+
+    <script>
+        function enviar(comando) {
+            const ip = document.getElementById('ipAddress').value;
+            const status = document.getElementById('status');
+            status.innerText = "Enviando a " + ip + "...";
+
+            // Usamos un truco de 'no-cors' para que el navegador no bloquee la petición
+            fetch(`http://${ip}/${comando}`, { mode: 'no-cors' })
+                .then(() => {
+                    status.innerText = "Comando " + comando.toUpperCase() + " enviado.";
+                })
+                .catch(err => {
+                    status.innerText = "Error de conexión local.";
+                });
+        }
+    </script>
+</body>
+</html>
